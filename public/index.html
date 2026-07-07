@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商品宣发文案生成器</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <aside class="input-panel">
+          <div class="brand-row">
+            <div>
+              <p class="eyebrow">AI Product Copy Studio</p>
+              <h1>商品宣发文案生成器</h1>
+            </div>
+            <span class="status-pill">GLM-5V + 多平台文案</span>
+          </div>
+
+          <label class="upload-zone" for="imageInput">
+            <input id="imageInput" type="file" accept="image/*" />
+            <img id="preview" alt="" />
+            <span id="uploadText">上传产品图片（可选）</span>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              商品品类
+              <input id="category" type="text" placeholder="例：护肤品、家居收纳、食品饮料" />
+            </label>
+            <label>
+              价格带
+              <input id="priceRange" type="text" placeholder="例：39-59 元，中高端，百元内" />
+            </label>
+          </div>
+
+          <label>
+            你的提示词
+            <textarea id="prompt" rows="5" placeholder="补充商品卖点、目标人群、禁用词、活动信息或希望突出的角度。"></textarea>
+          </label>
+
+          <div class="platform-block">
+            <div class="section-head">
+              <h2>生成平台</h2>
+              <button class="ghost-button" id="selectAll" type="button">全选</button>
+            </div>
+            <div class="platform-grid" id="platforms"></div>
+          </div>
+
+          <button id="generateBtn" class="primary-button" type="button">
+            <span>生成推广文案</span>
+          </button>
+          <div id="healthBox" class="health-box">正在检查 API 状态...</div>
+          <p class="hint">API Key 只在本地服务端读取，不会进入浏览器页面。上传图片时会结合图片生成；不上传也会根据文字信息生成。</p>
+        </aside>
+
+        <section class="result-panel">
+          <div class="result-toolbar">
+            <div>
+              <p class="eyebrow">Output</p>
+              <h2>多平台文案结果</h2>
+            </div>
+            <div class="toolbar-actions">
+              <select id="historySelect" class="history-select" aria-label="历史记录">
+                <option value="">历史记录</option>
+              </select>
+              <button id="loadHistory" class="ghost-button" type="button" disabled>载入</button>
+              <button id="clearHistory" class="ghost-button" type="button" disabled>清空</button>
+              <button id="copyAll" class="ghost-button" type="button" disabled>复制全部</button>
+            </div>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <div class="sample-image"></div>
+            <h3>等待生成</h3>
+            <p>上传图片或补充产品信息后，这里会生成每个平台的标题、卖点、流量词、话题标签和行动引导。</p>
+          </div>
+
+          <div id="loadingState" class="loading-state hidden">
+            <span class="spinner"></span>
+            <p>正在生成各平台话术...</p>
+          </div>
+
+          <div id="errorBox" class="error-box hidden"></div>
+          <div id="summary" class="summary hidden"></div>
+          <div id="results" class="results"></div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
