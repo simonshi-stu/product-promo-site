@@ -8,6 +8,8 @@
 
 生成逻辑会自动按平台决定语气，不再使用全局“文案语气”选项。价格带会作为高优先级变量进入“价格策略”和各平台的“价格角度”。最近 10 次生成结果会保存在浏览器本地历史记录中，方便回看和复制。
 
+商品品类输入支持可搜索下拉选择，可以按中文、拼音或首字母快速筛选类目，也可以直接输入自定义品类。
+
 ### 启动
 
 复制 `.env.example` 为 `.env`，填入你的 API Key，然后执行：
@@ -54,6 +56,8 @@ This is a local web prototype for generating product promotion copy. You can upl
 The current default provider is Zhipu GLM-5V-Turbo.
 
 The app now lets each platform determine its own tone automatically instead of using a global tone selector. Price range is treated as a high-priority input and appears in the overall price strategy plus each platform's price angle. The latest 10 generations are saved in local browser history for quick recovery and copying.
+
+The product category field includes a searchable picker. Users can search by Chinese text, pinyin, or initials, and can still enter a custom category manually.
 
 ### Run Locally
 

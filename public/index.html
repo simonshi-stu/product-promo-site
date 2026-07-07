@@ -8,12 +8,23 @@
   </head>
   <body>
     <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">AI Product Copy Studio</p>
+          <h1>商品宣发文案生成器</h1>
+        </div>
+        <div class="header-meta">
+          <span>GLM-5V</span>
+          <span>图片可选</span>
+          <span>本地历史</span>
+        </div>
+      </header>
       <section class="workspace">
         <aside class="input-panel">
           <div class="brand-row">
             <div>
-              <p class="eyebrow">AI Product Copy Studio</p>
-              <h1>商品宣发文案生成器</h1>
+              <p class="eyebrow">Input</p>
+              <h2>商品信息</h2>
             </div>
             <span class="status-pill">GLM-5V + 多平台文案</span>
           </div>
@@ -27,7 +38,10 @@
           <div class="field-grid">
             <label>
               商品品类
-              <input id="category" type="text" placeholder="例：护肤品、家居收纳、食品饮料" />
+              <div class="category-picker">
+                <input id="category" type="text" autocomplete="off" placeholder="输入中文、拼音或首字母，如 ai / sm / 眼镜" />
+                <div id="categoryDropdown" class="category-dropdown hidden"></div>
+              </div>
             </label>
             <label>
               价格带

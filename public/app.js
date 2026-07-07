@@ -2,6 +2,56 @@ const platformNames = ["小红书", "抖音", "天猫", "拼多多", "京东", "
 const defaults = new Set(["小红书", "抖音", "天猫", "拼多多"]);
 const historyKey = "productPromoHistory";
 const maxHistoryItems = 10;
+const categoryCatalog = [
+  { group: "A", name: "AI智能硬件", keys: "ai znyj znyp rgzn aiyingjian" },
+  { group: "A", name: "AI智能眼镜", keys: "ai znyj yanjing glasses eyewear" },
+  { group: "A", name: "安防监控", keys: "afjk shexiangtou camera jiankong" },
+  { group: "B", name: "办公设备", keys: "bgsb dayinji saomiao bangong" },
+  { group: "B", name: "保健食品", keys: "bjsp baojianpin yingyangpin" },
+  { group: "C", name: "宠物用品", keys: "cwyp chongwu maoliang gouliang" },
+  { group: "C", name: "厨房电器", keys: "cfdq chufang dianqi xiaodian" },
+  { group: "C", name: "潮玩手办", keys: "cwsb chaowan shouban blindbox" },
+  { group: "D", name: "电脑整机", keys: "dnzj diannao laptop pc" },
+  { group: "D", name: "大家电", keys: "djd jiadian kongtiao bingxiang xiyiji" },
+  { group: "D", name: "灯具照明", keys: "djzm dengju zhaoming" },
+  { group: "E", name: "耳机音频", keys: "ejyp erji yinxiang audio" },
+  { group: "F", name: "服饰内衣", keys: "fsny fushi neiyi clothing" },
+  { group: "F", name: "户外服饰", keys: "hwfs outdoor fushi" },
+  { group: "G", name: "个护仪器", keys: "ghyq gewu yirongyi meirongyi" },
+  { group: "G", name: "个护清洁", keys: "ghqj xihu mufa yazi kouqiang" },
+  { group: "G", name: "功能箱包", keys: "gnxb xiangbao beibao" },
+  { group: "H", name: "护肤美妆", keys: "hfmz hufu meizhuang cosmetics" },
+  { group: "H", name: "户外装备", keys: "hwzb outdoor zhuangbei luying" },
+  { group: "H", name: "黄金珠宝", keys: "hjzb huangjin zhubao jewelry" },
+  { group: "J", name: "家居收纳", keys: "jjsn jiaju shouna" },
+  { group: "J", name: "家纺床品", keys: "jfcp jiafang chuangpin" },
+  { group: "J", name: "家具家装", keys: "jjjz jiaju jiazhuang" },
+  { group: "J", name: "健身器材", keys: "jsqc jianshen qicai" },
+  { group: "J", name: "酒水饮料", keys: "jsyl jiushui yinliao" },
+  { group: "K", name: "咖啡茶饮", keys: "kfcy kafei chayin tea coffee" },
+  { group: "M", name: "母婴用品", keys: "myyp muying baobao yunying" },
+  { group: "M", name: "美妆工具", keys: "mzgj meizhuang gongju" },
+  { group: "N", name: "男装", keys: "nz nanzhuang menswear" },
+  { group: "N", name: "女装", keys: "nvz nuzhuang womenswear" },
+  { group: "P", name: "配饰眼镜", keys: "psyj peishi yanjing sunglasses" },
+  { group: "Q", name: "汽车用品", keys: "qcyp qiche chepin" },
+  { group: "Q", name: "清洁日化", keys: "qjrh qingjie rihua xiyi" },
+  { group: "S", name: "手机通讯", keys: "sjtx shouji tongxun phone" },
+  { group: "S", name: "食品零食", keys: "spls shipin lingshi snack" },
+  { group: "S", name: "数码配件", keys: "smpj shuma peijian charger" },
+  { group: "S", name: "摄影摄像", keys: "sysx sheying shexiang camera" },
+  { group: "T", name: "童装童鞋", keys: "tztx tongzhuang tongxie kids" },
+  { group: "T", name: "图书文具", keys: "tswj tushu wenju stationery" },
+  { group: "W", name: "玩具乐器", keys: "wj yueqi wanju toys" },
+  { group: "X", name: "鞋靴", keys: "xx xiexue shoes" },
+  { group: "X", name: "小家电", keys: "xjd xiaojiadian" },
+  { group: "Y", name: "运动户外", keys: "ydhw yundong huwai sports" },
+  { group: "Y", name: "营养保健", keys: "yybj yingyang baojian" },
+  { group: "Y", name: "医疗健康", keys: "yljk yiliao jiankang" },
+  { group: "Z", name: "智能穿戴", keys: "zncd zhineng chuandai wearable" },
+  { group: "Z", name: "智能家居", keys: "znjj zhineng jiaju smart home" },
+  { group: "Z", name: "钟表腕表", keys: "zbwb watch zhongbiao" }
+];
 
 const state = {
   imageDataUrl: "",
@@ -10,6 +60,8 @@ const state = {
 };
 
 const imageInput = document.querySelector("#imageInput");
+const categoryInput = document.querySelector("#category");
+const categoryDropdown = document.querySelector("#categoryDropdown");
 const preview = document.querySelector("#preview");
 const uploadText = document.querySelector("#uploadText");
 const uploadZone = document.querySelector(".upload-zone");
@@ -42,6 +94,61 @@ function getSelectedPlatforms() {
 
 function getInputValue(id) {
   return document.querySelector(`#${id}`).value.trim();
+}
+
+function normalizeSearch(value) {
+  return String(value || "").toLowerCase().replace(/\s+/g, "");
+}
+
+function filterCategories(query) {
+  const normalized = normalizeSearch(query);
+  if (!normalized) return categoryCatalog;
+  return categoryCatalog.filter((item) => {
+    const haystack = normalizeSearch(`${item.name} ${item.keys} ${item.group}`);
+    return haystack.includes(normalized);
+  });
+}
+
+function renderCategoryDropdown(query = "") {
+  const matches = filterCategories(query).slice(0, 80);
+  if (!matches.length) {
+    categoryDropdown.innerHTML = `<div class="category-empty">没有匹配品类，可直接输入自定义品类</div>`;
+    categoryDropdown.classList.remove("hidden");
+    return;
+  }
+
+  let currentGroup = "";
+  categoryDropdown.innerHTML = matches.map((item) => {
+    const groupTitle = item.group !== currentGroup ? `<div class="category-group">${item.group}</div>` : "";
+    currentGroup = item.group;
+    return `
+      ${groupTitle}
+      <button class="category-option" type="button" data-category="${escapeHtml(item.name)}">
+        <span>${escapeHtml(item.name)}</span>
+        <small>${escapeHtml(item.keys.split(" ").slice(0, 3).join(" / "))}</small>
+      </button>
+    `;
+  }).join("");
+  categoryDropdown.classList.remove("hidden");
+}
+
+function hideCategoryDropdown() {
+  categoryDropdown.classList.add("hidden");
+}
+
+function initCategoryPicker() {
+  categoryInput.addEventListener("focus", () => renderCategoryDropdown(categoryInput.value));
+  categoryInput.addEventListener("input", () => renderCategoryDropdown(categoryInput.value));
+  categoryDropdown.addEventListener("click", (event) => {
+    const option = event.target.closest(".category-option");
+    if (!option) return;
+    categoryInput.value = option.dataset.category;
+    hideCategoryDropdown();
+  });
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".category-picker")) return;
+    hideCategoryDropdown();
+  });
 }
 
 function getFormSnapshot() {
@@ -368,6 +475,7 @@ loadHistoryBtn.addEventListener("click", loadSelectedHistory);
 clearHistoryBtn.addEventListener("click", clearHistory);
 historySelect.addEventListener("change", updateHistoryButtons);
 generateBtn.addEventListener("click", generate);
+initCategoryPicker();
 initPlatforms();
 loadHistory();
 renderHistoryOptions();
